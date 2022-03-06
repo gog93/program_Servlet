@@ -2,7 +2,6 @@ package service.serviceImpl;
 
 
 import db.DBConnectionProvider;
-import model.Answer;
 import model.Result;
 import service.ResultService;
 
@@ -16,21 +15,22 @@ import java.util.List;
 
 public class ResultServiceImpl implements ResultService {
     private Connection connection = DBConnectionProvider.getInstance().getConnection();
+    private PollServiceImpl pollService = new PollServiceImpl();
+    private Result res = new Result();
 
     @Override
     public List<Result> findAll() {
-        Result result = new Result();
-        String sql = "SELECT * from book_a_table";
+        String sql = "SELECT * from res";
         List<Result> resultList = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                result.setId(resultSet.getInt(1));
-                result.setExplanation(resultSet.getString(2));
-                result.setMaxScore(resultSet.getInt(3));
-                result.setMaxScore(resultSet.getInt(4));
-                resultList.add(result);
+                res.setId(resultSet.getInt(1));
+                res.setExplanation(resultSet.getString(2));
+                res.setMaxScore(resultSet.getInt(3));
+                res.setMaxScore(resultSet.getInt(4));
+                resultList.add(res);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -40,17 +40,19 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public Result findById(long id) {
-        Result answer=new Result();
-        String sql = "SELECT * FROM book_A_Table WHERE id=" + id;
+        Result result = new Result();
+        String sql = "SELECT * FROM res WHERE id=" + id;
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             if (resultSet.next()) {
-                answer.setId(resultSet.getInt(1));
-//                answer.setMaxScore(resultSet.getString(2));
-//                answer.setExplanation(resultSet.getInt(3));
-                answer.setMinScore(resultSet.getInt(3));
-                return answer;
+                result.setId(resultSet.getInt(1));
+                result.setExplanation(resultSet.getString(2));
+                result.setMinScore(resultSet.getInt(3));
+                result.setMaxScore(resultSet.getInt(4));
+                result.setPoll(pollService.findById(resultSet.getInt(3)));
+
+                return result;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -61,11 +63,45 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public List<Result> findByPollId(long pollId) {
-        return null;
+
+        String sql = "SELECT * FROM res WHERE poll_id=" + pollId;
+        List<Result> result = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                res.setId(resultSet.getInt(1));
+                res.setExplanation(resultSet.getString(2));
+                res.setMinScore(resultSet.getInt(3));
+                res.setMaxScore(resultSet.getInt(4));
+                res.setPoll(pollService.findById(resultSet.getInt(5)));
+                result.add(res);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
     }
 
     @Override
-    public Result findByScore(long pollId, int score) {
+    public Result findByScore(int maxScore, int minScore) {
+        String sql = "SELECT * FROM res WHERE min_Score='" + minScore + "' and max_Score = '" + maxScore + "'";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                res.setId(resultSet.getInt(1));
+                res.setExplanation(resultSet.getString(2));
+                res.setMinScore(resultSet.getInt(3));
+                res.setMaxScore(resultSet.getInt(4));
+                res.setPoll(pollService.findById(resultSet.getInt(5)));
+                return res;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return null;
+
     }
 }

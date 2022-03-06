@@ -1,19 +1,30 @@
 package model;
 
-import java.util.List;
-
 public class Question {
 
     private long id;
 
     private String text;
+    private Poll poll;
 
-    private List<Answer> answers;
-public Question(){}
-    public Question(long id, String text, List<Answer> answers) {
+
+    public Poll getPoll() {
+        return poll;
+    }
+
+    public void setPoll(Poll poll) {
+        this.poll = poll;
+    }
+
+
+
+    public Question() {
+    }
+
+    public Question(long id, String text, Poll poll) {
         this.id = id;
         this.text = text;
-        this.answers = answers;
+        this.poll = poll;
     }
 
     public long getId() {
@@ -32,11 +43,12 @@ public Question(){}
         this.text = text;
     }
 
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", poll=" + poll +
+                '}';
     }
 }

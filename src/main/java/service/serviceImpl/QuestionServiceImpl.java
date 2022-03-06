@@ -15,19 +15,22 @@ import java.util.List;
 
 public class QuestionServiceImpl implements QuestionService {
     private Connection connection = DBConnectionProvider.getInstance().getConnection();
+    private PollServiceImpl pollService = new PollServiceImpl();
+    private Question question = new Question();
+
 
     @Override
     public List<Question> findAll() {
-        Question question=new Question();
-        String sql = "SELECT * from book_a_table";
+        String sql = "SELECT * from question";
         List<Question> result = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                        question.setId(resultSet.getInt(1));
-//                        question.setAnswers(resultSet.getString(2))
-                        question.setText(resultSet.getString(3));
+                question.setId(resultSet.getInt(1));
+                question.setText(resultSet.getString(2));
+                question.setPoll(pollService.findById(resultSet.getInt(3)));
+
                 result.add(question);
             }
         } catch (SQLException throwables) {
@@ -38,17 +41,16 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question findById(long id) {
-        Question question =new Question();
-        String sql = "SELECT * FROM user WHERE id=" + id;
+        String sql = "SELECT * FROM question WHERE id=" + id;
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             if (resultSet.next()) {
+                question.setId(resultSet.getInt(1));
+                question.setText(resultSet.getString(2));
+                question.setPoll(pollService.findById(resultSet.getInt(3)));
 
-                        question.setId(resultSet.getInt(1));
-//                        question.setAnswers(resultSet.getString(2));
-                        question.setText(resultSet.getString(3));
-                       return question;
+                return question;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -58,6 +60,22 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> findByPollId(long pollId) {
-        return null;
+
+        String sql = "SELECT * FROM question WHERE poll_id=" + pollId;
+        List<Question> result = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                question.setId(resultSet.getInt(1));
+                question.setText(resultSet.getString(2));
+                question.setPoll(pollService.findById(resultSet.getInt(3)));
+                result.add(question);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
     }
 }
+

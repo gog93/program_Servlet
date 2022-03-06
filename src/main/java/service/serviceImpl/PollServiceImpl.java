@@ -23,8 +23,7 @@ public class PollServiceImpl implements Service<Poll> {
     public List<Poll> findAll() {
 
         Poll poll=new Poll();
-        QuestionServiceImpl question=new QuestionServiceImpl();
-        String sql = "SELECT * from book_a_table";
+        String sql = "SELECT * from poll";
         List<Poll> result = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
@@ -44,15 +43,14 @@ public class PollServiceImpl implements Service<Poll> {
     @Override
     public Poll findById(long id) {
         Poll poll=new Poll();
-        String sql = "SELECT * FROM book_A_Table WHERE id=" + id;
+        String sql = "SELECT * FROM poll WHERE id=" + id;
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             if (resultSet.next()) {
                 poll.setId(resultSet.getInt(1));
-//                poll.setQuestions(resultSet.getString(2));
-//                poll.setResults(resultSet.getInt(3));
-                poll.setName(resultSet.getString(4));
+                poll.setName(resultSet.getString(2));
+                poll.setDescription(resultSet.getString(3));
                 return poll;
             }
         } catch (SQLException throwables) {

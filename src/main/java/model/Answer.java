@@ -8,11 +8,26 @@ public class Answer {
     private String text;
 
     private int weight;
-public Answer(){}
-    public Answer(long id, String text, int weight) {
+    private Question questionId;
+
+    public Question getQuestionId(Question byId) {
+        return questionId;
+    }
+
+    public void setQuestionId(Question questionId) {
+        this.questionId = questionId;
+    }
+
+
+    public Answer() {
+    }
+
+
+    public Answer(long id, String text, int weight, Question questionId) {
         this.id = id;
         this.text = text;
         this.weight = weight;
+        this.questionId = questionId;
     }
 
     public long getId() {
@@ -37,5 +52,15 @@ public Answer(){}
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", weight=" + weight +
+                ", questionId=" + questionId +
+                '}';
     }
 }

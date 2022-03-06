@@ -9,5 +9,5 @@ public interface ResultService extends Service<Result> {
 
     List<Result> findByPollId(long pollId);
 
-    Result findByScore(long pollId, int score);
+    public Result findByScore(int minScore, int maxScore);
 }

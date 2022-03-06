@@ -2,6 +2,7 @@ package service.serviceImpl;
 
 import db.DBConnectionProvider;
 import model.Answer;
+import model.Question;
 import service.AnswerService;
 
 import java.sql.Connection;
@@ -18,8 +19,9 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public List<Answer> findAll() {
+        QuestionServiceImpl q=new QuestionServiceImpl();
         Answer answer=new Answer();
-        String sql = "SELECT * from book_a_table";
+        String sql = "SELECT * from answer";
         List<Answer> result = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
@@ -28,6 +30,7 @@ public class AnswerServiceImpl implements AnswerService {
                         answer.setId(resultSet.getInt(1));
                         answer.setText(resultSet.getString(2));
                         answer.setWeight(resultSet.getInt(3));
+                        answer.setQuestionId(q.findById(resultSet.getInt(4)));
 
                 result.add(answer);
             }
@@ -40,7 +43,9 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public Answer findById(long id) {
         Answer answer=new Answer();
-        String sql = "SELECT * FROM book_A_Table WHERE id=" + id;
+        QuestionServiceImpl q=new QuestionServiceImpl();
+
+        String sql = "SELECT * FROM answer WHERE id=" + id;
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -48,7 +53,9 @@ public class AnswerServiceImpl implements AnswerService {
               answer.setId(resultSet.getInt(1));
               answer.setText(resultSet.getString(2));
               answer.setWeight(resultSet.getInt(3));
-              return answer;
+                answer.setQuestionId(q.findById(resultSet.getInt(4)));
+
+                return answer;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -59,6 +66,25 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public List<Answer> findByQuestionId(long questionId) {
-        return null;
+        Answer answer=new Answer();
+        QuestionServiceImpl q=new QuestionServiceImpl();
+
+        String sql = "SELECT * FROM answer WHERE question_id=" + questionId;
+        List<Answer> result = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                answer.setId(resultSet.getInt(1));
+                answer.setText(resultSet.getString(2));
+                answer.setWeight(resultSet.getInt(3));
+                answer.setQuestionId(q.findById(resultSet.getInt(4)));
+
+                result.add(answer);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
     }
 }

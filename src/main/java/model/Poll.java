@@ -62,4 +62,15 @@ public class Poll {
     public void setResults(List<Result> results) {
         this.results = results;
     }
+
+    @Override
+    public String toString() {
+        return "Poll{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", questions=" + questions +
+                ", results=" + results +
+                '}';
+    }
 }
